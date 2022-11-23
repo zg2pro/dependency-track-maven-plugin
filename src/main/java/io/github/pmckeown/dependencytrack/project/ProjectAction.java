@@ -24,9 +24,9 @@ public class ProjectAction {
         this.logger = logger;
     }
 
-    public Project getProject(String projectName, String projectVersion) throws DependencyTrackException {
+    public Project getProject(String projectName, String projectVersion, boolean verifySsl) throws DependencyTrackException {
         try {
-            Response<List<Project>> response = projectClient.getProjects();
+            Response<List<Project>> response = projectClient.getProjects(verifySsl);
 
             if (response.isSuccess()) {
                 Optional<List<Project>> body = response.getBody();

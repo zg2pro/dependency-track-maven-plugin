@@ -61,7 +61,6 @@ public class UploadBomMojoTest {
     public void thatTheBomLocationIsDefaultedWhenNotSupplied() throws Exception {
         ArgumentCaptor<String> argumentCaptor = ArgumentCaptor.forClass(String.class);
         doReturn(new File(".")).when(project).getBasedir();
-        doReturn(aProject().build()).when(projectAction).getProject(PROJECT_NAME, PROJECT_VERSION);
         doReturn(true).when(uploadBomAction).upload(anyString());
 
         uploadBomMojo.setProjectName(PROJECT_NAME);

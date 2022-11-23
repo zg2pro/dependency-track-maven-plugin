@@ -36,7 +36,7 @@ public abstract class AbstractDependencyTrackMojo extends AbstractMojo {
     private String apiKey;
 
     @Parameter(defaultValue = "true", property = "dependency-track.verifySsl")
-    private boolean verifySsl;
+    protected boolean verifySsl;
 
     @Parameter(defaultValue = "false", property = "dependency-track.failOnError")
     private boolean failOnError;

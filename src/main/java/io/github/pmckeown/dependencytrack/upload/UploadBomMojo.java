@@ -62,7 +62,7 @@ public class UploadBomMojo extends AbstractDependencyTrackMojo {
             if (!uploadBomAction.upload(getBomLocation())) {
                 handleFailure("Bom upload failed");
             }
-            Project project = projectAction.getProject(projectName, projectVersion);
+            Project project = projectAction.getProject(projectName, projectVersion, verifySsl);
             metricsAction.refreshMetrics(project);
         } catch (DependencyTrackException ex) {
             handleFailure("Error occurred during upload", ex);

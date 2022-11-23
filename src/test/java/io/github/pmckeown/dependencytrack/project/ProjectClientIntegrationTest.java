@@ -39,7 +39,7 @@ public class ProjectClientIntegrationTest extends AbstractDependencyTrackMojoTes
 		stubFor(get(urlEqualTo(V1_PROJECT_WITH_ONE_MILLION_LIMIT)).willReturn(
 				aResponse().withBodyFile("api/v1/project/get-all-projects.json")));
 
-		List<Project> projects = projectClient.getProjects().getBody().orElse(Collections.emptyList());
+		List<Project> projects = projectClient.getProjects(true).getBody().orElse(Collections.emptyList());
 
 		verify(exactly(1), getRequestedFor(urlEqualTo(V1_PROJECT_WITH_ONE_MILLION_LIMIT)));
 		assertThat(projects.size(), is(COUNT_ALL_PROJECTS));

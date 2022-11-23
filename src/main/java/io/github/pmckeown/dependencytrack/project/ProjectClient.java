@@ -41,7 +41,8 @@ public class ProjectClient {
                 .addDefaultHeader(ACCEPT, "application/json");
     }
 
-    public Response<List<Project>> getProjects() {
+    public Response<List<Project>> getProjects(boolean verifySsl) {
+        Unirest.config().verifySsl(verifySsl);
         HttpResponse<List<Project>> httpResponse = get(commonConfig.getDependencyTrackBaseUrl() + V1_PROJECT)
                 .header("X-Api-Key", commonConfig.getApiKey())
                 .asObject(new GenericType<List<Project>>(){});

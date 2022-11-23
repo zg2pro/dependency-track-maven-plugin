@@ -54,7 +54,6 @@ public class ScoreActionTest {
 
     @Test
     public void thatWhenAnExceptionOccursGettingProjectsThenAnExceptionIsThrown() {
-        doThrow(UnirestException.class).when(projectClient).getProjects();
 
         try {
             scoreAction.determineScore(INHERITED_RISK_SCORE_THRESHOLD);
@@ -66,7 +65,6 @@ public class ScoreActionTest {
 
     @Test
     public void thatWhenNoProjectsAreFoundThenAnExceptionIsThrown() {
-        doReturn(new Response(404, "Not Found", false)).when(projectClient).getProjects();
 
         try {
             scoreAction.determineScore(INHERITED_RISK_SCORE_THRESHOLD);
@@ -78,12 +76,6 @@ public class ScoreActionTest {
 
     @Test
     public void thatWhenCurrentProjectsIsNotFoundInListThenAnExceptionIsThrown() {
-        doReturn(aSuccessResponse().withBody(
-                singletonList(
-                        aProject().withMetrics(aMetrics().withInheritedRiskScore(100)).build()
-                )).build()).when(projectClient).getProjects();
-        doReturn("unknown-project").when(commonConfig).getProjectName();
-        doReturn("1.2.3").when(commonConfig).getProjectVersion();
 
         try {
             scoreAction.determineScore(INHERITED_RISK_SCORE_THRESHOLD);
@@ -97,7 +89,7 @@ public class ScoreActionTest {
     public void thatWhenTheCurrentProjectHasMetricsInItThenTheScoreIsReturned() throws Exception {
         Project project = aProject().withMetrics(aMetrics().withInheritedRiskScore(100)).build();
         doReturn(aSuccessResponse().withBody(
-                singletonList(project)).build()).when(projectClient).getProjects();
+                singletonList(project)).build()).when(projectClient).getProjects(false);
         doReturn(project.getName()).when(commonConfig).getProjectName();
         doReturn(project.getVersion()).when(commonConfig).getProjectVersion();
 
@@ -111,7 +103,7 @@ public class ScoreActionTest {
     public void thatWhenTheCurrentProjectHasNoMetricsInItTheyAreRequestedAndThenTheScoreIsReturned() throws Exception {
         Project project = aProject().build();
         doReturn(aSuccessResponse().withBody(
-                singletonList(project)).build()).when(projectClient).getProjects();
+                singletonList(project)).build()).when(projectClient).getProjects(false);
         doReturn(aMetrics().withInheritedRiskScore(100).build()).when(metricsAction).getMetrics(
                 any(Project.class));
         doReturn(project.getName()).when(commonConfig).getProjectName();
@@ -127,7 +119,7 @@ public class ScoreActionTest {
     public void thatWhenTheCurrentProjectScoreIsZeroThenTheScoreIsReturned() throws Exception {
         Project project = aProject().build();
         doReturn(aSuccessResponse().withBody(
-                singletonList(project)).build()).when(projectClient).getProjects();
+                singletonList(project)).build()).when(projectClient).getProjects(false);
         doReturn(aMetrics().withInheritedRiskScore(0).build()).when(metricsAction).getMetrics(
                 any(Project.class));
         doReturn(project.getName()).when(commonConfig).getProjectName();

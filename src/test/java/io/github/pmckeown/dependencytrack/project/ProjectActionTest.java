@@ -44,9 +44,9 @@ public class ProjectActionTest {
 
     @Test
     public void thatProjectCanBeRetrievedByNameAndVersion() throws Exception {
-        doReturn(aSuccessResponse().withBody(aProjectList()).build()).when(projectClient).getProjects();
+        doReturn(aSuccessResponse().withBody(aProjectList()).build()).when(projectClient).getProjects(true);
 
-        Project project = getProjectAction.getProject(PROJECT_NAME_2, PROJECT_VERSION_2);
+        Project project = getProjectAction.getProject(PROJECT_NAME_2, PROJECT_VERSION_2, true);
 
         assertThat(project, is(not(nullValue())));
         assertThat(project.getUuid(), is(equalTo(UUID_2)));
@@ -54,10 +54,10 @@ public class ProjectActionTest {
 
     @Test
     public void thatExceptionIsThrownWhenConnectionFails() {
-        doThrow(UnirestException.class).when(projectClient).getProjects();
+        doThrow(UnirestException.class).when(projectClient).getProjects(true);
 
         try {
-            getProjectAction.getProject(PROJECT_NAME_2, PROJECT_VERSION_2);
+            getProjectAction.getProject(PROJECT_NAME_2, PROJECT_VERSION_2, true);
         } catch (Exception ex) {
             assertThat(ex, is(instanceOf(DependencyTrackException.class)));
         }
@@ -65,10 +65,10 @@ public class ProjectActionTest {
 
     @Test
     public void thatANotFoundResponseResultsInAnException() {
-        doReturn(aNotFoundResponse()).when(projectClient).getProjects();
+        doReturn(aNotFoundResponse()).when(projectClient).getProjects(true);
 
         try {
-            getProjectAction.getProject(PROJECT_NAME_2, PROJECT_VERSION_2);
+            getProjectAction.getProject(PROJECT_NAME_2, PROJECT_VERSION_2, true);
         } catch (Exception ex) {
             assertThat(ex, is(instanceOf(DependencyTrackException.class)));
         }
@@ -76,10 +76,10 @@ public class ProjectActionTest {
 
     @Test
     public void thatNoProjectsAreFoundAnExceptionIsThrown() {
-        doReturn(aSuccessResponse().build()).when(projectClient).getProjects();
+        doReturn(aSuccessResponse().build()).when(projectClient).getProjects(true);
 
         try {
-            getProjectAction.getProject(PROJECT_NAME_2, PROJECT_VERSION_2);
+            getProjectAction.getProject(PROJECT_NAME_2, PROJECT_VERSION_2, true);
         } catch (Exception ex) {
             assertThat(ex, is(instanceOf(DependencyTrackException.class)));
         }
@@ -87,10 +87,10 @@ public class ProjectActionTest {
 
     @Test
     public void thatRequestedProjectCannotBeFoundAnExceptionIsThrown() {
-        doReturn(aSuccessResponse().withBody(aProjectList()).build()).when(projectClient).getProjects();
+        doReturn(aSuccessResponse().withBody(aProjectList()).build()).when(projectClient).getProjects(true);
 
         try {
-            getProjectAction.getProject("missing-project", "unknown-version");
+            getProjectAction.getProject("missing-project", "unknown-version", true);
         } catch (Exception ex) {
             assertThat(ex, is(instanceOf(DependencyTrackException.class)));
         }

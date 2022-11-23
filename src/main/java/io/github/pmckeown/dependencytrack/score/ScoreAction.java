@@ -41,7 +41,7 @@ class ScoreAction {
 
     Integer determineScore(Integer inheritedRiskScoreThreshold) throws DependencyTrackException {
         try {
-            Response<List<Project>> response = projectClient.getProjects();
+            Response<List<Project>> response = projectClient.getProjects(commonConfig.isVerifySsl());
 
             Optional<List<Project>> body = response.getBody();
             if (response.isSuccess() && body.isPresent()) {
