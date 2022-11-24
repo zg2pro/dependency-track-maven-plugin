@@ -5,15 +5,14 @@
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
 
-    <groupId>io.github.pmckeown</groupId>
+    <groupId>com.github.zg2pro.dt</groupId>
     <artifactId>dependency-track-maven-plugin</artifactId>
     <version>1.2.1-SNAPSHOT</version>
     <packaging>maven-plugin</packaging>
 
     <name>Dependency Track Maven Plugin</name>
-    <url>https://github.com/pmckeown/dependency-track-maven-plugin</url>
+    <url>https://github.com/zg2pro/dependency-track-maven-plugin</url>
     <description>Maven plugin to integrate with a Dependency Track server to submit dependency manifests and gather project metrics.</description>
-    <inceptionYear>2019</inceptionYear>
 
     <licenses>
         <license>
@@ -23,42 +22,132 @@
         </license>
     </licenses>
 
-    <developers>
+   <developers>
         <developer>
-            <name>Paul McKeown</name>
-            <roles>
-                <role>Developer</role>
-            </roles>
+            <name>Gregory Anne</name>
+            <email>englishblazere@free.fr</email>
+            <url>https://github.com/zg2pro</url>
         </developer>
     </developers>
 
+
     <scm>
-        <connection>scm:git:git@github.com:pmckeown/dependency-track-maven-plugin.git</connection>
-        <url>https://github.com/pmckeown/dependency-track-maven-plugin.git</url>
-        <developerConnection>scm:git:git@github.com:pmckeown/dependency-track-maven-plugin.git</developerConnection>
+        <connection>scm:git:git@github.com:zg2pro/dependency-track-maven-plugin.git</connection>
+        <url>https://github.com/zg2pro/dependency-track-maven-plugin.git</url>
+        <developerConnection>scm:git:git@github.com:zg2pro/dependency-track-maven-plugin.git</developerConnection>
         <tag>HEAD</tag>
     </scm>
 
     <issueManagement>
         <system>github</system>
-        <url>https://github.com/pmckeown/dependency-track-maven-plugin/issues</url>
+        <url>https://github.com/zg2pro/dependency-track-maven-plugin/issues</url>
     </issueManagement>
 
     <ciManagement>
         <system>github-actions</system>
-        <url>https://github.com/pmckeown/dependency-track-maven-plugin/actions/workflows/maven.yml</url>
+        <url>https://github.com/zg2pro/dependency-track-maven-plugin/actions/workflows/maven.yml</url>
     </ciManagement>
 
-    <distributionManagement>
+   <distributionManagement>
         <snapshotRepository>
             <id>ossrh</id>
             <url>https://oss.sonatype.org/content/repositories/snapshots</url>
         </snapshotRepository>
         <repository>
             <id>ossrh</id>
-            <url>https://oss.sonatype.org/service/local/staging/deploy/maven2/</url>
+            <url>https://oss.sonatype.org/service/local/staging/deploy/maven2</url>
         </repository>
     </distributionManagement>
+
+    <profiles>
+        <profile>
+            <id>sources-javadoc</id>
+            <activation>
+                <activeByDefault>true</activeByDefault>
+            </activation>
+            <build>
+                <plugins>
+                    <plugin>
+                        <groupId>org.apache.maven.plugins</groupId>
+                        <artifactId>maven-javadoc-plugin</artifactId>
+                        <version>3.2.0</version>
+                        <executions>
+                            <execution>
+                                <goals>
+                                    <goal>jar</goal>
+                                </goals>
+                            </execution>
+                        </executions>
+                    </plugin>
+                    <plugin>
+                        <groupId>org.apache.maven.plugins</groupId>
+                        <artifactId>maven-source-plugin</artifactId>
+                        <version>3.0.1</version>
+                        <executions>
+                            <execution>
+                                <goals>
+                                    <goal>jar</goal>
+                                </goals>
+                            </execution>
+                        </executions>
+                    </plugin>
+                    <plugin>
+                        <groupId>org.jacoco</groupId>
+                        <artifactId>jacoco-maven-plugin</artifactId>
+                        <version>0.8.5</version>
+                        <executions>
+                            <execution>
+                                <goals>
+                                    <goal>prepare-agent</goal>
+                                </goals>
+                            </execution>
+                            <execution>
+                                <id>report</id>
+                                <phase>test</phase>
+                                <goals>
+                                    <goal>report</goal>
+                                </goals>
+                            </execution>
+                        </executions>
+                    </plugin>
+                </plugins>
+            </build>
+        </profile>
+        <profile>
+            <id>pgp-signing</id>
+            <build>
+                <plugins>
+                    <plugin>
+                        <groupId>org.apache.maven.plugins</groupId>
+                        <artifactId>maven-gpg-plugin</artifactId>
+                        <version>1.6</version>
+                        <executions>
+                            <execution>
+                                <id>sign-artifacts</id>
+                                <phase>verify</phase>
+                                <goals>
+                                    <goal>sign</goal>
+                                </goals>
+                            </execution>
+                        </executions>
+                    </plugin>
+                    <plugin>
+                        <groupId>org.sonatype.plugins</groupId>
+                        <artifactId>nexus-staging-maven-plugin</artifactId>
+                        <version>1.6.8</version>
+                        <extensions>true</extensions>
+                        <configuration>
+                            <serverId>ossrh</serverId>
+                            <nexusUrl>https://oss.sonatype.org/</nexusUrl>
+                            <autoReleaseAfterClose>false</autoReleaseAfterClose>
+                            <autoDropAfterRelease>true</autoDropAfterRelease>
+                        </configuration>
+                    </plugin>
+                </plugins>
+            </build>
+        </profile>
+    </profiles>
+
 
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
@@ -314,209 +403,5 @@
         </plugins>
     </build>
 
-    <profiles>
-        <profile>
-            <id>release</id>
-            <build>
-                <plugins>
-                    <plugin>
-                        <groupId>org.apache.maven.plugins</groupId>
-                        <artifactId>maven-plugin-plugin</artifactId>
-                        <executions>
-                            <execution>
-                                <id>mojo-descriptor</id>
-                                <goals>
-                                    <goal>descriptor</goal>
-                                </goals>
-                            </execution>
-                            <execution>
-                                <id>help-goal</id>
-                                <goals>
-                                    <goal>helpmojo</goal>
-                                </goals>
-                            </execution>
-                        </executions>
-                    </plugin>
-                    <plugin>
-                        <groupId>org.apache.maven.plugins</groupId>
-                        <artifactId>maven-source-plugin</artifactId>
-                        <executions>
-                            <execution>
-                                <id>attach-sources</id>
-                                <goals>
-                                    <goal>jar-no-fork</goal>
-                                </goals>
-                            </execution>
-                        </executions>
-                    </plugin>
-                    <plugin>
-                        <groupId>org.apache.maven.plugins</groupId>
-                        <artifactId>maven-javadoc-plugin</artifactId>
-                        <executions>
-                            <execution>
-                                <id>attach-javadocs</id>
-                                <goals>
-                                    <goal>jar</goal>
-                                </goals>
-                            </execution>
-                        </executions>
-                    </plugin>
-                    <plugin>
-                        <groupId>org.apache.maven.plugins</groupId>
-                        <artifactId>maven-gpg-plugin</artifactId>
-                        <version>3.0.1</version>
-                        <executions>
-                            <execution>
-                                <id>sign-artifacts</id>
-                                <phase>verify</phase>
-                                <goals>
-                                    <goal>sign</goal>
-                                </goals>
-                            </execution>
-                        </executions>
-                    </plugin>
-                    <plugin>
-                        <groupId>org.sonatype.plugins</groupId>
-                        <artifactId>nexus-staging-maven-plugin</artifactId>
-                        <version>1.6.13</version>
-                        <extensions>true</extensions>
-                        <configuration>
-                            <serverId>ossrh</serverId>
-                            <nexusUrl>https://oss.sonatype.org/</nexusUrl>
-                            <autoReleaseAfterClose>true</autoReleaseAfterClose>
-                        </configuration>
-                    </plugin>
-                    <plugin>
-                        <groupId>org.eclipse.sisu</groupId>
-                        <artifactId>sisu-maven-plugin</artifactId>
-                        <version>0.3.5</version>
-                        <executions>
-                            <execution>
-                                <id>generate-index</id>
-                                <phase>package</phase>
-                                <goals>
-                                    <goal>index</goal>
-                                </goals>
-                            </execution>
-                        </executions>
-                    </plugin>
-                </plugins>
-            </build>
-        </profile>
-
-        <!--
-            This profile activates integration with the Sonarcloud project for static analysis of the codebase.
-            It is only enabled if the SONAR_TOKEN environment variable is set in the build environment.
-        -->
-        <profile>
-            <id>sonar</id>
-            <activation>
-                <property>
-                    <name>env.SONAR_TOKEN</name>
-                </property>
-            </activation>
-            <properties>
-                <sonar.host.url>https://sonarcloud.io</sonar.host.url>
-                <sonar.organization>pmckeown</sonar.organization>
-                <sonar.projectKey>io.github.pmckeown:dependency-track-maven-plugin</sonar.projectKey>
-                <!--suppress UnresolvedMavenProperty -->
-                <sonar.login>${env.SONAR_TOKEN}</sonar.login>
-                <sonar.coverage.jacoco.xmlReportPaths>${project.basedir}/target/site/jacoco/jacoco.xml</sonar.coverage.jacoco.xmlReportPaths>
-            </properties>
-            <build>
-                <plugins>
-                    <plugin>
-                        <groupId>org.sonarsource.scanner.maven</groupId>
-                        <artifactId>sonar-maven-plugin</artifactId>
-                        <executions>
-                            <execution>
-                                <phase>verify</phase>
-                                <goals>
-                                    <goal>sonar</goal>
-                                </goals>
-                            </execution>
-                        </executions>
-                    </plugin>
-                </plugins>
-            </build>
-        </profile>
-
-        <!--
-            The following profile executes this plugin against an instance of Dependency Track.
-            It is behind a profile as you need a running server to communicate with.
-            2 properties must be set on the command line or as environment variables.
-
-            Example usage with command args:
-            mvn clean install -Peat-your-own-dog-food -Ddependency-track.dependencyTrackBaseUrl -Ddependency-track.dependencyTrackApiKey
-
-            Example usage with environment variables set (DEPENDENCY_TRACK_BASE_URL & DEPENDENCY_TRACK_API_KEY):
-            mvn clean install -Peat-your-own-dog-food
-        -->
-        <profile>
-            <id>eat-your-own-dog-food</id>
-            <build>
-                <plugins>
-                    <plugin>
-                        <groupId>org.cyclonedx</groupId>
-                        <artifactId>cyclonedx-maven-plugin</artifactId>
-                        <version>2.7.0</version>
-                        <configuration>
-                            <schemaVersion>1.1</schemaVersion>
-                            <includeBomSerialNumber>true</includeBomSerialNumber>
-                            <includeCompileScope>true</includeCompileScope>
-                            <includeProvidedScope>true</includeProvidedScope>
-                            <includeRuntimeScope>true</includeRuntimeScope>
-                            <includeSystemScope>true</includeSystemScope>
-                            <includeTestScope>false</includeTestScope>
-                        </configuration>
-                        <executions>
-                            <execution>
-                                <id>generate-bom</id>
-                                <phase>verify</phase>
-                                <goals>
-                                    <goal>makeAggregateBom</goal>
-                                </goals>
-                            </execution>
-                        </executions>
-                    </plugin>
-                    <plugin>
-                        <groupId>io.github.pmckeown</groupId>
-                        <artifactId>dependency-track-maven-plugin</artifactId>
-                        <version>${project.version}</version>
-                        <configuration>
-                            <!--suppress UnresolvedMavenProperty -->
-                            <dependencyTrackBaseUrl>${env.DEPENDENCY_TRACK_BASE_URL}</dependencyTrackBaseUrl>
-                            <!--suppress UnresolvedMavenProperty -->
-                            <apiKey>${env.DEPENDENCY_TRACK_API_KEY}</apiKey>
-                            <failOnError>true</failOnError>
-                        </configuration>
-                        <executions>
-                            <execution>
-                                <id>upload-bom</id>
-                                <phase>verify</phase>
-                                <goals>
-                                    <goal>upload-bom</goal>
-                                </goals>
-                            </execution>
-                            <execution>
-                                <id>fail-if-vulnerabilities-present</id>
-                                <phase>verify</phase>
-                                <goals>
-                                    <goal>findings</goal>
-                                </goals>
-                                <configuration>
-                                    <findingThresholds>
-                                        <critical>0</critical>
-                                        <high>0</high>
-                                        <medium>0</medium>
-                                        <low>0</low>
-                                    </findingThresholds>
-                                </configuration>
-                            </execution>
-                        </executions>
-                    </plugin>
-                </plugins>
-            </build>
-        </profile>
-    </profiles>
+     
 </project>
